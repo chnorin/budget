@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8" />
+  <title>Skicka till Kalkylark</title>
+</head>
+<body>
+  <h1>Mata in ett tal</h1>
+  <input type="text" id="myNumber" placeholder="Skriv en siffra" />
+  <button onclick="sendData()">Skicka</button>
+  <p id="response"></p>
+
+  <script>
+    function sendData() {
+      const input = document.getElementById("myNumber").value;
+
+      fetch("https://script.google.com/macros/s/AKfycbwYEhZWREmIw7S-z-OK6j07RXnLNGAyCz5u_4GtrMzaTwcFjfwT65CDcEI5uQQTETs5Wg/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ input })
+      })
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById("response").innerText =
+          "Svar från Google Sheets: " + data.result;
+      })
+      .catch(error => {
+        console.error("Fetch-fel:", error);
+        document.getElementById("response").innerText =
+          "Kunde inte hämta svar från servern.";
+      });
+    }
+  </script>
+</body>
+</html>
