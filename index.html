@@ -10,28 +10,27 @@
   <button onclick="sendData()">Skicka</button>
   <p id="response"></p>
 
-  <script>
-    function sendData() {
-      const input = document.getElementById("myNumber").value;
+<script>
+  function sendData() {
+    const input = document.getElementById("myNumber").value;
+    const formData = new URLSearchParams();
+    formData.append("input", input);
 
-      fetch("https://script.google.com/macros/s/AKfycbysoRRq7F-bq0iqJgXooYB5n-SG9B_GRobtEiF9Q4aIQVPhXJKhKLIP6BPUowvRvd_Mng/exec", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ input })
-      })
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById("response").innerText =
-          "Svar från Google Sheets: " + data.result;
-      })
-      .catch(error => {
-        console.error("Fetch-fel:", error);
-        document.getElementById("response").innerText =
-          "Kunde inte hämta svar från servern.";
-      });
-    }
-  </script>
+    fetch("https://script.google.com/macros/s/AKfycbysoRRq7F-bq0iqJgXooYB5n-SG9B_GRobtEiF9Q4aIQVPhXJKhKLIP6BPUowvRvd_Mng/exec", {
+      method: "POST",
+      body: formData,
+    })
+    .then(response => response.json())
+    .then(data => {
+      document.getElementById("response").innerText =
+        "Svar från Google Sheets: " + data.result;
+    })
+    .catch(error => {
+      console.error("Fetch-fel:", error);
+      document.getElementById("response").innerText =
+        "Kunde inte hämta svar från servern.";
+    });
+  }
+</script>
 </body>
 </html>
