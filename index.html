@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="sv">
 <head>
-  <meta charset="UTF-8" />
-  <title>Skicka till Kalkylark</title>
+  <meta charset="UTF-8">
+  <title>Google Sheets Web App</title>
 </head>
 <body>
-  <h1>Mata in din lön</h1>
-  <input type="text" id="myNumber" placeholder="Skriv en siffra" />
+  <h1>Skicka till Google Sheets</h1>
+  <input type="text" id="inputBox" placeholder="Skriv något..." />
   <button onclick="sendData()">Skicka</button>
-  <p id="response"></p>
 
-<script>
-  function sendData() {
-    const input = document.getElementById("myNumber").value;
-    const formData = new URLSearchParams();
-    formData.append("input", input);
+  <h2>Respons från Sheets:</h2>
+  <div id="responseArea">Ingen data än</div>
 
-    fetch("https://script.google.com/macros/s/AKfycbysoRRq7F-bq0iqJgXooYB5n-SG9B_GRobtEiF9Q4aIQVPhXJKhKLIP6BPUowvRvd_Mng/exec", {
-      method: "POST",
-      body: formData,
-    })
-    .then(response => response.json())
-    .then(data => {
-      document.getElementById("response").innerText =
-        "Svar från Google Sheets: " + data.result;
-    })
-    .catch(error => {
-      console.error("Fetch-fel:", error);
-      document.getElementById("response").innerText =
-        "Kunde inte hämta svar från servern!!";
-    });
-  }
-</script>
+  <script>
+    async function sendData() {
+      const inputValue = document.getElementById("inputBox").value;
+      const responseArea = document.getElementById("responseArea");
+
+      try {
+        const res = await fetch("https://script.google.com/macros/s/AKfycbyQDgpUcqanxiCYyShUOyzm1n9-6LJx_P7cMQdT4EcIP_3KqaF_w1y_2f2g8ohoG5Mu/exec", {
+          method: "POST",
+          body: JSON.stringify({ input: inputValue }),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        });
+
+        const data = await res.json();
+        responseArea.textContent = data.response;
+      } catch (error) {
+        responseArea.textContent = "Fel vid kontakt med Sheets: " + error;
+      }
+    }
+  </script>
 </body>
 </html>
